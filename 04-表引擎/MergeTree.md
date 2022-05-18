@@ -90,3 +90,42 @@ drop table t_order_mt2；
 skp_idx_a.idx2
 skp_idx_a.mrk3
 这两个文件就是跳数索引  
+
+## 数据TTL
+
+过期时间
+
+### 字段级TTL
+
+create table t_order_mt3(
+    id UInt32,
+    sku_id String,
+    total_amount Decimal(16,2) TTL create_time+interval 10 SECOND,
+    create_time Datetime
+)engine = MergeTree
+    partition by toYYYYMMDD(create_time)
+    primary key (id)
+    order by (id, sku_id);
+
+上面TTL设置的列不能是主键列  
+测试TTL：  
+
+insert into t_order_mt3 values
+(106, 'sku_001', 1000.00, '2022-05-18 10:26:00'),
+(107, 'sku_002', 2000.00, '2022-05-18 10:26:00'),
+(110, 'sku_003', 600.00, '2022-05-18 10:26:00');
+
+时间到时total_amount列数据为0
+
+下面这句不执行也可以
+optimize table t_order_mt3 final;
+
+这里如果不为0，可能的原因是虚拟机的时区看是否设置为东8区了，clickhouse的时区是否也设置正确
+
+### 表级TTL
+
+alter table t_order_mt3 modify ttl create_time + interval 10 second;  
+整个表数据在create_time 10秒之后丢失  
+
+官网有数据过期移动到磁盘功能  
+可以对已有表设置某一列的ttl
