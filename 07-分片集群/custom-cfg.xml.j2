@@ -1,0 +1,46 @@
+<yandex>
+    <remote_servers>
+        <gmall_cluster>
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>host1</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password>GhTY1OeM</password>
+                 </replica>
+                 <replica>
+                    <host>host2</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password>GhTY1OeM</password>
+                 </replica>
+            </shard>
+
+            <shard>
+                <internal_replication>true</internal_replication>
+                <replica>
+                    <host>host3</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password>GhTY1OeM</password>
+                 </replica>
+            </shard>
+        </gmall_cluster>
+    </remote_servers>
+
+    <zookeeper>
+        {% for host in groups['zookeeper'] %}
+        <node>
+            <host>{{ host }}</host>
+            <port>2181</port>
+        </node>
+        {% endfor %}
+    </zookeeper>
+    <listen_host>::</listen_host>
+    <timezone>Asia/Shanghai</timezone>
+    <macros>
+        <shard>01</shard>
+        <replica>rep_1_1</replica>
+    </macros>
+</yandex>
