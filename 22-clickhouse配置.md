@@ -1,0 +1,1 @@
+clickhouse中放开prometheus配置后，检查： host1:9363/metrics
